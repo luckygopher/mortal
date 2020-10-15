@@ -44,18 +44,18 @@ if (! function_exists('rand_str')) {
 
 /**
  * 字符串脱敏处理
-+----------------------------------------------------------
+ *----------------------------------------------------------
  * 将一个字符串部分字符用*替代隐藏
-+----------------------------------------------------------
+ *----------------------------------------------------------
  * @param string $string 待转换的字符串
  * @param int  $bengin 起始位置，从0开始计数，当$type=4时，表示左侧保留长度
  * @param int  $len  需要转换成*的字符个数，当$type=4时，表示右侧保留长度
  * @param int  $type  转换类型：0，从左向右隐藏；1，从右向左隐藏；2，从指定字符位置分割前由右向左隐藏；
  *                               3，从指定字符位置分割后由左向右隐藏；4，保留首末指定字符串
  * @param string $glue  分割符
-+----------------------------------------------------------
+ *----------------------------------------------------------
  * @return string 处理后的字符串
-+----------------------------------------------------------
+ *----------------------------------------------------------
  */
 if (! function_exists('hiding_sensitive_string')) {
     function hiding_sensitive_string($string, $bengin = 0, $len = 4, $type = 0, $char = "*", $glue = "@")
@@ -274,7 +274,7 @@ if (! function_exists("handle_idcard_15")) {
  * @example   "51010199901019999",["gender","constellation", "birthday", "age", "zodiac"]
  * @return array
  */
-if(!function_exists("parse_idcard")) {
+if(! function_exists("parse_idcard")) {
     function parse_idcard($card, $parseParams = ["gender","constellation", "birthday", "age", "zodiac"])
     {
         $len = strlen($card);
@@ -323,5 +323,106 @@ if(!function_exists("parse_idcard")) {
         }, $parseParams);
 
         return $reData;
+    }
+}
+
+/**
+ * 生成uuid
+ */
+if (! function_exists('create_uuid')) {
+    function create_uuid($prefix = "", $head = "", $length = 32)
+    {
+        $str = \Webpatser\Uuid\Uuid::generate()->hex;
+        return $prefix . $str . $head;
+    }
+}
+
+/**
+ * curl post请求发送json
+ */
+if (! function_exists('curl_post_json')) {
+    function curl_post_json($url, array $param)
+    {
+        $data = json_encode($param);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER,
+            ['Content-Type: application/json;', 'Content-Length: ' . strlen($data)]
+        );
+        $response = curl_exec($ch);
+        curl_close ($ch);
+        if (false === $response) {
+            throw new \Exception("请求第三方接口错误:request:".$data);
+        }
+        return $response;
+    }
+}
+
+/**
+ * curl post请求
+ */
+if (! function_exists('curl_post')) {
+    function curl_post($url, $param)
+    {
+        $data = http_build_query($param);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); //信任任何证书
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                "Content-Type: application/x-www-form-urlencoded",
+            ]
+        );
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        if (false === $response) {
+            throw new \Exception("请求第三方接口错误:request:".$url.' param:'.json_encode($param));
+        }
+        return $response;
+    }
+}
+
+/**
+ * curl post请求发送json
+ */
+if (! function_exists('curl_get')) {
+    function curl_get($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, 0 ); // 过滤HTTP头
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);// 显示输出结果
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);//SSL证书认证
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        if (false === $response) {
+            throw new \Exception("请求第三方接口错误:request:".$url);
+        }
+        return $response;
+    }
+}
+
+/**
+ * 获取IP地址
+ */
+if (! function_exists('get_ip')) {
+    function get_ip() {
+        if(getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) {
+            $ip = getenv('HTTP_CLIENT_IP');
+        } elseif(getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
+            $ip = getenv('HTTP_X_FORWARDED_FOR');
+        } elseif(getenv('REMOTE_ADDR') && strcasecmp(getenv('REMOTE_ADDR'), 'unknown')) {
+            $ip = getenv('REMOTE_ADDR');
+        } elseif(isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], 'unknown')) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
+        //匹配IP信息
+        $result =  preg_match ( '/[\d\.]{7,15}/', $ip, $matches ) ? $matches [0] : 'unknown';
+        return $result;
     }
 }
