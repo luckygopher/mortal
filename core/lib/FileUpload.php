@@ -19,6 +19,7 @@ class FileUpload
     private $newFileName; //新文件名
     private $errorNum = 0;  //错误码
     private $errorMess = ""; //用来提供错误报告
+
     /**
      * 接收文件上传的配置信息并赋值给成员属性
      *
@@ -34,6 +35,7 @@ class FileUpload
             $this->setOption($key, $val);
         }
     }
+
     /**
      * 给成员属性赋值
      *
@@ -45,11 +47,13 @@ class FileUpload
     {
         $this->$key = $val;
     }
+
     /**
      * 根据错误码设置相应的错误信息
      *
      * @return void
      */
+
     private function getError()
     {
         $str = "上传文件<font color='red'>{$this->originName}</font>时出错：";
@@ -68,6 +72,7 @@ class FileUpload
         }
         return $str;
     }
+
     /**
      * 检查上传文件的保存路径
      * 配置是否为空
@@ -97,6 +102,7 @@ class FileUpload
 
         return true;
     }
+
     /**
      * 检查上传文件大小是否超过允许大小
      *
@@ -111,6 +117,7 @@ class FileUpload
             return true;
         }
     }
+
     /**
      * 检查文件是否为允许上传的文件类型
      *
@@ -125,6 +132,7 @@ class FileUpload
             return false;
         }
     }
+
     /**
      * 设置上传文件的新文件名
      *
@@ -138,6 +146,7 @@ class FileUpload
             $this->setOption('newFileName', $this->originName);
         }
     }
+
     /**
      * 生成上传文件的随机文件名
      *
