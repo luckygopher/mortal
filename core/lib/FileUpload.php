@@ -157,4 +157,31 @@ class FileUpload
         $fileName = date('YmdHis').rand(100,999);
         return $fileName.'.'.$this->fileType;
     }
+
+    /**
+     * 把上传文件从临时目录移动到配置的保存目录
+     *
+     * @return void
+     */
+    private function copyFile()
+    {
+        if (!$this->errorNum) {
+            $filePath = rtrim($this->filePath, '/').'/';
+            $filePath .= $this->newFileName;
+
+            if (is_uploaded_file($this->tmpFileName)) {
+                if (move_uploaded_file($this->tmpFileName, $filePath)) {
+                    return true;
+                }else {
+                    $this->setOption('errorNum', -3);
+                    return false;
+                }
+            }else {
+                return false;
+            }
+
+        }else {
+            return false;
+        }
+    }
 }
