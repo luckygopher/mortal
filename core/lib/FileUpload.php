@@ -138,4 +138,14 @@ class FileUpload
             $this->setOption('newFileName', $this->originName);
         }
     }
+    /**
+     * 生成上传文件的随机文件名
+     *
+     * @return void
+     */
+    private function randName()
+    {
+        $fileName = date('YmdHis').rand(100,999);
+        return $fileName.'.'.$this->fileType;
+    }
 }
