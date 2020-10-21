@@ -111,4 +111,31 @@ class FileUpload
             return true;
         }
     }
+    /**
+     * 检查文件是否为允许上传的文件类型
+     *
+     * @return void
+     */
+    private function checkFileType()
+    {
+        if (in_array(strtolower($this->fileType), $this->allowType)) {
+            return true;
+        }else {
+            $this->setOption('errorNum', -1);
+            return false;
+        }
+    }
+    /**
+     * 设置上传文件的新文件名
+     *
+     * @return void
+     */
+    private function setNewFileName()
+    {
+        if ($this->isRandName) {
+            $this->setOption('newFileName', $this->randName());
+        }else {
+            $this->setOption('newFileName', $this->originName);
+        }
+    }
 }
