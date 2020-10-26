@@ -184,4 +184,28 @@ class FileUpload
             return false;
         }
     }
+
+    /**
+     * 设置$_FILES相关的参数
+     *
+     * @param string $name
+     * @param string $tmp_name
+     * @param integer $size
+     * @param integer $error
+     * @return void
+     */
+    private function setFiles($name="", $tmp_name='', $size=0, $error=0)
+    {
+        $this->setOption('errorNum', $error);
+        if ($error) {
+            return false;
+        }
+        $this->setOption('originName', $name);
+        $this->setOption('tmpFileName', $tmp_name);
+        //分割文件名，取最后一个后缀
+        $arrStr = explode('.', $name);
+        $this->setOption('fileType', strtolower($arrStr[count($arrStr)-1]));
+        $this->setOption('fileSize', $size);
+        return true;
+    }
 }
