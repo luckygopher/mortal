@@ -208,4 +208,87 @@ class FileUpload
         $this->setOption('fileSize', $size);
         return true;
     }
+
+    /**
+     * 上传一个或多个文件
+     * 参数为文件上传input的名字
+     * @param [type] $fileField
+     * @return void
+     */
+    public function uploadFile($fileField)
+    {
+        $return = true;
+        //检查存放上传文件的路径
+        if (!$this->checkFilePath()) {
+            $this->errorMess = $this->getError();
+            return false;
+        }
+        $name = $_FILES[$fileField]['name'];
+        $tmp_name = $_FILES[$fileField]['tmp_name'];
+        $size = $_FILES[$fileField]['size'];
+        $error = $_FILES[$fileField]['error'];
+        //如果上传的是多个文件
+        if (is_Array($name)) {
+            //错误代号必须也是Array，因为一个文件对应一个错误代号
+            $uploadErrors = array();
+            //遍历检查文件
+            for ($i=0; $i < count($name); $i++) {
+                if ($this->setFiles($name[$i], $tmp_name[$i], $size[$i], $error[$i])) {
+                    if (!$this->checkFileSize() || !$this->checkFileType()) {
+                        $uploadErrors[] = $this->getError();
+                        $return = false;
+                    }
+                }else {
+                    $uploadErrors[] = $this->getError();
+                    $return = false;
+                }
+                if (!$return){
+                    $this->setFiles();
+                }
+            }
+
+            if ($return) {
+                $fileNames = array();
+                for ($i=0; $i < count($name); $i++) {
+                    if ($this->setFiles($name[$i], $tmp_name[$i], $size[$i], $error[$i])) {
+                        $this->setNewFileName();
+                        if (!$this->copyFile()) {
+                            $uploadErrors[] = $this->getError();
+                            $return = false;
+                        }else {
+                            $fileNames[] = $this->newFileName;
+                        }
+                    }
+                }
+                //是一个数组
+                $this->newFileName = $fileNames;
+            }
+
+            //赋值错误信息
+            $this->errorMess = $uploadErrors;
+            return $return;
+            //如果是单个文件上传
+        } else {
+            if ($this->setFiles($name, $tmp_name, $size, $error)) {
+                if ($this->checkFileSize() && $this->checkFileType()) {
+                    $this->setNewFileName();
+                    if ($this->copyFile()) {
+                        return true;
+                    }else {
+                        $return = false;
+                    }
+                }else {
+                    $return = false;
+                }
+            }else {
+                $return = false;
+            }
+
+            if (!$return) {
+                $this->errorMess = $this->getError();
+            }
+
+            return $return;
+        }
+    }
 }
