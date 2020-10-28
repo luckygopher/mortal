@@ -291,4 +291,24 @@ class FileUpload
             return $return;
         }
     }
+
+    /**
+     * 用户获取上传成功之后的新文件名
+     *
+     * @return void
+     */
+    public function getNewFileName()
+    {
+        return $this->newFileName;
+    }
+
+    /**
+     * 如果上传失败，调用此方法查看错误信息
+     *
+     * @return void
+     */
+    public function getErrorMsg()
+    {
+        return $this->errorMess;
+    }
 }
