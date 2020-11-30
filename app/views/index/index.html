@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+{% include "public/header.html" %}
+
+<body class="index">
+<div class="box">
+    <!--banner-->
+    <div class="J_banner banner">
+        <div class="swiper-wrapper">
+            <div class="box swiper-slide">
+                <a href="" class="displayB">
+                    <img src="{{__PUBLIC__}}/home/img/banner.jpg" alt="" width="100%">
+                </a>
+            </div>
+            <div class="box swiper-slide">
+                <a href="" class="displayB">
+                    <img src="{{__PUBLIC__}}/home/img/banner.jpg" alt="" width="100%">
+                </a>
+            </div>
+            <div class="box swiper-slide">
+                <a href="" class="displayB">
+                    <img src="{{__PUBLIC__}}/home/img/banner.jpg" alt="" width="100%">
+                </a>
+            </div>
+        </div>
+        <div class="search" id="search">
+            <i class="icon-search"></i>
+            <input type="text">
+        </div>
+    </div>
+
+    <div class="box">
+        <div class="hot1">
+            <a href="">
+                <img src="{{__PUBLIC__}}/home/img/hot1.jpg" alt="">
+            </a>
+        </div>
+        <div class="hot1">
+            <a href="">
+                <img src="{{__PUBLIC__}}/home/img/hot2.jpg" alt="">
+            </a>
+            <a href="">
+                <img src="{{__PUBLIC__}}/home/img/hot3.jpg" alt="">
+            </a>
+        </div>
+    </div>
+    <div class="box">
+        <a href="" class="displayB">
+            <img src="{{__PUBLIC__}}/home/img/banner2.jpg" class="displayB" width="100%" alt="">
+        </a>
+    </div>
+
+    <div class="box">
+        <div class="tabs box" id="J_tabs">
+            <div class="tab-nav">
+                <a href="#tjcp" class="active">推荐产品</a>
+            </div>
+            <div class="tab-nav">
+                <a href="#jrcx">今日促销</a>
+            </div>
+            <div class="tab-nav">
+                <a href="#xpsj">新品上架</a>
+            </div>
+        </div>
+        <div class="tab-content box">
+
+            <ul id="tjcp" class="content-list box">
+                <notempty name="_tjlist">
+                    <volist name="_tjlist" id="tj">
+                        <li>
+                            <a href="">
+                                <img src="" class="displayB" width="100%" alt="">
+                            </a>
+                            <div class="text-box">
+                                <div class="text">
+                                    <p>
+                                        <a href="">test(11111)</a>
+                                    </p>
+                                    <span>￥1111/213123(123123嫁鸡随鸡起购)</span>
+                                </div>
+                                <span onclick="addCar(1,2)" class="shopping-care"></span>
+                            </div>
+                        </li>
+                    </volist>
+                    <else/>
+                    aOh! 暂时还没有内容!
+                </notempty>
+            </ul>
+
+            <ul id="jrcx" class="content-list box displayN">
+                <notempty name="_cxlist">
+                    <volist name="_cxlist" id="cx">
+                        <li>
+                            <a href="#">
+                                <img src="#" class="displayB" width="100%" alt="">
+                            </a>
+                            <div class="text-box">
+                                <div class="text">
+                                    <p>
+                                        <a href="#">sdf(sdsds)</a>
+                                    </p>
+                                    <span>￥1232/sdsd(asdaasd起购)</span>
+                                </div>
+                                <span onclick="addCar(1,231)" class="shopping-care"></span>
+                            </div>
+                        </li>
+                    </volist>
+                    <else/>
+                    aOh! 暂时还没有内容!
+                </notempty>
+            </ul>
+
+            <ul id="xpsj" class="content-list box displayN">
+                <notempty name="_xplist">
+                    <volist name="_xplist" id="xp">
+                        <li>
+                            <a href="#">
+                                <img src="#" class="displayB" width="100%" alt="">
+                            </a>
+                            <div class="text-box">
+                                <div class="text">
+                                    <p>
+                                        <a href="#">asd(sdad)</a>
+                                    </p>
+                                    <span>￥121/asda(qweqwewqewq起购)</span>
+                                </div>
+                                <span onclick="addCar(1,2)" class="shopping-care"></span>
+                            </div>
+                        </li>
+                    </volist>
+                    <else/>
+                    aOh! 暂时还没有内容!
+                </notempty>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+{% include "public/footer.html" %}
+</body>
+
+</html>
