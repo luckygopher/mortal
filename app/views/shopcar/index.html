@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+{% include "public/header.html" %}
+<body>
+<div class="box shopcar">
+    <div class="title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">购物车</span>
+        <notempty name="_list">
+            <span class="text-right">编辑</span>
+            <else/>
+        </notempty>
+    </div>
+    <div class="ct_list">
+        <notempty name="_list">
+            <div class="all-select">
+                <i class="icon1 active" id="J_allIcon"></i>
+                <span>全部选中</span>
+            </div>
+
+            <volist name="_list" id="vo">
+                <div class="order">
+                    <i class="icon2 J_icon active" id="{$vo.id}"></i>
+                    <a href="/Shop/pinfo" class="img-box">
+                        <img src="__ROOT__{$vo.path}" alt="">
+                    </a>
+                    <div class="text">
+                        <p class="txt1">{$vo.product_name}({$vo.lname})</p>
+                        <p class="txt2">{$vo.description}</p>
+                        <p class="txt2">￥<span class="price">{$vo.price}</span>/{$vo.uname}(<span class="minimum">{$vo.minimum_purchases}</span>{$vo.uname}起购)</p>
+                        <div class="num-box">
+                            <i class="icon-reduce J_reduce" ></i>
+                            <input type="text" class="num J_num" value="{$vo.buy_num}" />
+                            <i class="icon-add J_add" ></i>
+                        </div>
+                    </div>
+                </div>
+            </volist>
+            <else/>
+            <div class="text">aOh! 暂时还没有内容! </div>
+        </notempty>
+    </div>
+</div>
+
+<div class="total">
+    <notempty name="_list">
+        <span>合计：<span class="num">¥{$total}</span></span>
+        <span class="go-order" id="go-order" onclick="goOrder()">去下单</span>
+        <else/>
+        <a href="/Index/index" class="go-order">去首页逛逛</a>'
+    </notempty>
+</div>
+<div class="footer-box"></div>
+
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/shopcar.js"></script>
+<script src="https://cdn.bootcss.com/decimal.js/7.2.3/decimal.min.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+</body>
+</html>
