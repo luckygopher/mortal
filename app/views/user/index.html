@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box personal">
+    <div class="head">
+        <a href="" class="head-img">
+            <img src="{{__PUBLIC__}}/home/img/personal2.png" alt="">
+        </a>
+        <div class="text">
+            <p>姓名：{{data[0]}}</p>
+            <if condition='$info.status eq 1'>
+                <p>帐号状态：未激活</p>
+                <elseif condition='$info.status eq 2' />
+                <p>帐号状态：正常</p>
+                <elseif condition='$info.status eq 3' />
+                <p>帐号状态：已冻结</p>
+                <else />获取状态失败!
+            </if>
+        </div>
+    </div>
+    <div class="entrance">
+        <a href="#">
+            <i class="icon-personal1"></i>
+            <span class="name">
+                    店名
+                    <span class="state">
+                        <if condition='$info.status eq 1'>未激活
+                        <elseif condition='$info.status eq 2' />正常
+                        <elseif condition='$info.status eq 3' />已冻结
+                        <else />获取状态失败!
+                        </if>
+                    </span>
+                </span>
+            <span class="icon-right"></span>
+        </a>
+    </div>
+    <div class="balance">
+        <div class="text">
+            <p class="num">￥{$info.store_balance}</p>
+            <p>门店余额</p>
+        </div>
+        <div class="text">
+            <p class="num">￥{$info.line_credit}</p>
+            <p>门店欠款</p>
+        </div>
+    </div>
+    <div class="entrance">
+        <a href="{:U('User/coupon')}">
+            <i class="icon-personal2"></i>
+            <span class="name">
+                    我的优惠卷
+                </span>
+            <span class="icon-right"></span>
+        </a>
+    </div>
+    <div class="entrance">
+        <a href="{:U('Order/index')}">
+            <div class="user-cont">
+                <i class="icon-personal3"></i>
+                <span class="name">
+                        我的订单
+                    </span>
+                <span class="icon-right"></span>
+            </div>
+        </a>
+    </div>
+    <div class="entrance">
+        <a href="{:U('User/updateInfo')}">
+            <div class="user-cont">
+                <i class="icon-personal4"></i>
+                <span class="name">
+                        修改资料
+                    </span>
+                <span class="icon-right"></span>
+            </div>
+        </a>
+    </div>
+    <div class="entrance">
+        <a href="{:U('User/profile')}">
+            <div class="user-cont">
+                <i class="icon-personal5"></i>
+                <span class="name">
+                        修改密码
+                    </span>
+                <span class="icon-right"></span>
+            </div>
+        </a>
+    </div>
+    <div class="entrance">
+        <a href="tel:13558900197">
+            <div class="user-cont">
+                <i class="icon-personal6"></i>
+                <span class="name">
+                        客服电话
+                    </span>
+                <span class="icon-right"></span>
+                <a href="tel:13558900197" class="phone">13558900197</a>
+            </div>
+        </a>
+    </div>
+    <div class="entrance">
+        <a href="{:U('User/about')}">
+            <div class="user-cont">
+                <i class="icon-personal7"></i>
+                <span class="name">
+                        关于我们
+                    </span>
+                <span class="icon-right"></span>
+            </div>
+        </a>
+    </div>
+    <input type="button" value="退出登录" class="sign-out" id="sign-out" />
+</div>
+
+{% include "public/footer.html" %}
+
+<script>
+    $('#sign-out').on('click',function(){
+        $.ajax({
+            url: "#",
+            type: 'post',
+            dataType: 'json',
+            data: {},
+        })
+            .done(function(data) {
+                window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+            })
+            .fail(function() {
+                console.log("error:请求失败!");
+            })
+    });
+</script>
+</body>
+
+</html>

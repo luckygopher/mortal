@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body class="login">
+<a href="javascript:history.go(-1);" rel="external nofollow" class="fallback"></a>
+<div class="login-box">
+    <div class="login-input">
+        <label>
+            <i class="icon-login-user"></i>
+            <span>账号：</span>
+        </label>
+        <input type="text" name="tel" id="tel" class="regExp" />
+    </div>
+    <div class="login-input">
+        <label>
+            <i class="icon-login-password"></i>
+            <span>密码：</span>
+        </label>
+        <input type="password" name="pwd" id="pwd" class="regExp" />
+    </div>
+    <div class="login-btn">
+        <input type="submit" value="登陆" id="login">
+    </div>
+    <div class="login-link">
+        <a href="{:U('User/problem')}" class="fl">常见问题</a>
+        <a href="{:U('User/register')}" class="fr">商家注册</a>
+    </div>
+</div>
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/public.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+<script>
+    $('#login').on('click',function(){
+        if (!getInputVal($(".regExp"))) {
+            return;//验证数据
+        }
+        var tel = $.trim($("#tel").val());
+        var pwd = $.trim($("#pwd").val());
+        $.ajax({
+            url: "{:U('User/login')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                'tel': tel,
+                'pwd': pwd
+            },
+        })
+            .done(function(data) {
+                window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+            })
+            .fail(function() {
+                console.log("error:请求失败!");
+            })
+    });
+</script>
+</body>
+</html>
