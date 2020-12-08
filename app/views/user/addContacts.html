@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body class="contacts-body">
+<div class="box">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">新增联系人</span>
+    </div>
+    <div class="box">
+        <form action="{:U()}" method="post" onsubmit="return getInputVal($('.regExp'))">
+            <div class="contacts-txt">
+                <span class="name">门店名称：</span>
+                <input type="text" placeholder="门店名称" value="{$store_name}" readonly="readonly">
+            </div>
+            <div class="contacts-txt">
+                <span class="name">姓名/称呼：</span>
+                <input type="text" placeholder="收货人姓名(必填)" name="name" class="regExp">
+            </div>
+            <div class="contacts-txt">
+                <span class="name">手机号码：</span>
+                <input type="number" placeholder="收货人手机号(必填)" name="tel" class="regExp">
+            </div>
+            <input type="submit" value="提交" class="contacts-sub">
+        </form>
+    </div>
+</div>
+<div class="nav" id="J_nav">
+    {% include "public/nav.html" %}
+</div>
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/public.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+<script type="text/javascript">
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+</html>
