@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">优惠卷</span>
+    </div>
+    <div class="coupon-tab box" id="J_couponTab">
+        <a href="#wsy" class="active">未使用</a>
+        <a href="#ysy">已使用</a>
+        <a href="#ygq">已过期</a>
+    </div>
+    <div class="box">
+        <ul class="box coupon-list" id="wsy">
+            <li>
+                <img src="{{__PUBLIC__}}/home/img/coupon1.jpg" alt="">
+            </li>
+        </ul>
+        <ul class="box coupon-list displayN" id="ysy">
+            <li>
+                <img src="{{__PUBLIC__}}/home/img/coupon2.jpg" alt="">
+            </li>
+        </ul>
+        <ul class="box coupon-list displayN" id="ygq">
+            <li>
+                <img src="{{__PUBLIC__}}/home/img/coupon3.jpg" alt="">
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="nav" id="J_nav">
+    {% include "public/nav.html" %}
+</div>
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/public.js"></script>
+<script src="{{__PUBLIC__}}/home/js/tabs.js"></script>
+<script type="text/javascript">
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+</html>
