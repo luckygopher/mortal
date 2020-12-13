@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box store">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">我的门店</span>
+    </div>
+    <div class="prompt">门店如有欠款，将无法下单，请先完成之前欠款的支付！</div>
+    <div class="store-content1 box">
+        <div class="store-recharge">
+            <p class="num">￥{$wallet['store_balance']}</p>
+            <p class="txt">门店余额</p>
+        </div>
+        <div class="store-recharge">
+            <p class="num">￥{$wallet['line_credit']}</p>
+            <p class="txt">门店欠款</p>
+        </div>
+        <!-- <div class="store-recharge">
+            <a href="{:U('User/recharge')}">在线充值</a>
+        </div> -->
+    </div>
+    <!-- <div class="entrance">
+        <a href="{:U('User/rechargeRecord')}">
+            <i class="icon-personal8"></i>
+            <span class="name">
+                充值记录
+            </span>
+            <span class="icon-right"></span>
+        </a>
+    </div> -->
+    <div class="title">
+        <span>收货联系人</span>
+        <a href="{:U('User/addContacts')}">新增</a>
+    </div>
+    <div class="ctt_list">
+        <notempty name="_contacts">
+            <volist name="_contacts" id="vo">
+                <div class="contacts">
+                    <span>{$vo['name']}（{$vo['tel']}）</span>
+                    <span class="delete J_delete" id="{$vo['id']}">删除</span>
+                </div>
+            </volist>
+            <else/>
+            <div class="contacts">您还未添加收货联系人!</div>
+        </notempty>
+    </div>
+</div>
+<div class="nav" id="J_nav">
+    {% include "public/nav.html" %}
+</div>
+
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/public.js"></script>
+<script>
+    $('.J_delete').on('click',function(){
+        var id = $(this).attr('id');
+        $.ajax({
+            url: "{:U('User/delContact')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                id: id
+            },
+            success: function(data){
+                var str = '';
+                if (JSON.stringify(data) != 'null') {
+                    for (var i = 0; i < data.length; i++) {
+                        str += "<div class='contacts'>";
+                        str += "<span>"+data[i]['name']+"（"+data[i]['tel']+"）</span>";
+                        str += "<span class='delete J_delete' id='"+data[i]['id']+"'>删除</span>";
+                        str += "</div>";
+                    };
+                }else{
+                    str += '<div class="contacts">您还未添加收货联系人!</div>';
+                }
+                $('.ctt_list').html(str);
+            }
+        })
+    });
+
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+</html>
