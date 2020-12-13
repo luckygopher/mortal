@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box problem">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">常见问题</span>
+    </div>
+    <img src="__PUBLIC__/Home/img/problem1.jpg" class="displayB" width="100%" alt="">
+    <div class="box problem-list">
+        <div class="problem-txt J_problem">
+            <span>忘记登录或者支付密码怎么办？</span>
+            <i class="icon1 J_icon"></i>
+        </div>
+        <div class="box answer displayN">
+            请联系销售人员进行处理！
+        </div>
+    </div>
+    <div class="box problem-list">
+        <div class="problem-txt J_problem">
+            <span>关于退换货</span>
+            <i class="icon1 J_icon"></i>
+        </div>
+        <div class="box answer displayN">
+            亲,为了保障您的利益并向您提供更好的服务,我们推出了详细的售后服务标准，请您仔细阅读以下内容：
+            哈哈哈哈哈哈哈哈
+
+        </div>
+    </div>
+</div>
+
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script>
+    $('.problem-list').on('click',function(){
+        $(this).siblings().find('.answer').hide();
+        $(this).siblings().find('.J_icon').removeClass('on');
+        $(this).find('.J_icon').toggleClass('on');
+        $(this).find('.answer').toggle();
+    });
+</script>
+</body>
+</html>
