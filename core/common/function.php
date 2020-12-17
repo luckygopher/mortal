@@ -411,7 +411,8 @@ if (! function_exists('curl_get')) {
  * 获取IP地址
  */
 if (! function_exists('get_ip')) {
-    function get_ip() {
+    function get_ip()
+    {
         if(getenv('HTTP_CLIENT_IP') && strcasecmp(getenv('HTTP_CLIENT_IP'), 'unknown')) {
             $ip = getenv('HTTP_CLIENT_IP');
         } elseif(getenv('HTTP_X_FORWARDED_FOR') && strcasecmp(getenv('HTTP_X_FORWARDED_FOR'), 'unknown')) {
@@ -424,5 +425,38 @@ if (! function_exists('get_ip')) {
         //匹配IP信息
         $result =  preg_match ( '/[\d\.]{7,15}/', $ip, $matches ) ? $matches [0] : 'unknown';
         return $result;
+    }
+}
+
+
+/**
+ * 获取文件的大小，并且转换成便于阅读的KB，MB等格式
+ */
+if (! function_exists('formatSize')) {
+    function formatSize($size)
+    {
+        $sizes = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
+        if ($size == 0) {
+            return('n/a');
+        } else {
+            return (round($size/pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i]);
+        }
+    }
+}
+
+/**
+ * 强制下载文件
+ */
+if (! function_exists('download')) {
+    function download($filename)
+    {
+        if ((isset($filename))&&(file_exists($filename))){
+            header("Content-length: ".filesize($filename));
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            readfile("$filename");
+        } else {
+            echo "Looks like file does not exist!";
+        }
     }
 }
