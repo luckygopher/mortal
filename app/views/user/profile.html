@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body class="contacts-body">
+<div class="box">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">修改密码</span>
+    </div>
+    <div class="box change-password-tab" id="J_changePasswordTab">
+        <a href="#loginPassword" class="active">登录密码</a>
+        <a href="#paymentPassword">支付密码</a>
+    </div>
+    <div class="box">
+        <div class="box" id="loginPassword">
+            <div class="contacts-txt">
+                <span class="name">原密码：</span>
+                <input type="password" placeholder="请输入原登录密码" id="oldpwdl">
+            </div>
+            <div class="contacts-txt">
+                <span class="name">新密码：</span>
+                <input type="password" placeholder="请输入新登录密码" id="pwdl" name="pwd" class="l_regExp">
+            </div>
+            <div class="contacts-txt">
+                <span class="name">再次输入：</span>
+                <input type="password" placeholder="请再次输入新登录密码" id="repwdl">
+            </div>
+            <input type="submit" value="提交" class="contacts-sub" id="loginpwd">
+        </div>
+
+        <div class="box displayN" id="paymentPassword">
+            <div class="contacts-txt">
+                <span class="name">原密码：</span>
+                <input type="password" placeholder="请输入原支付密码" id="oldpwdp">
+            </div>
+            <div class="contacts-txt">
+                <span class="name">新密码：</span>
+                <input type="password" placeholder="请输入新支付密码" id="pwdp" name="pay_pwd" class="p_regExp">
+            </div>
+            <div class="contacts-txt">
+                <span class="name">再次输入：</span>
+                <input type="password" placeholder="请再次输入新支付密码" id="repwdp">
+            </div>
+            <input type="submit" value="提交" class="contacts-sub" id="paypwd">
+        </div>
+    </div>
+</div>
+<div class="nav" id="J_nav">
+    {% include "public/nav.html" %}
+</div>
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/public.js"></script>
+<script src="{{__PUBLIC__}}/home/js/tabs.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+<script>
+    //登录
+    $('#loginpwd').on('click',function(){
+        if (!getInputVal($(".l_regExp"))) {
+            return;//验证数据
+        }
+        var oldpwdl = $.trim($("#oldpwdl").val());
+        var pwdl = $.trim($("#pwdl").val());
+        var repwdl = $.trim($("#repwdl").val());
+        $.ajax({
+            url: "{:U('User/profile')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                'type': 'pwd',
+                'oldpwd': oldpwdl,
+                'pwd': pwdl,
+                'repwd': repwdl
+            },
+        })
+            .done(function(data) {
+                window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+            })
+            .fail(function() {
+                console.log("error:请求失败!");
+            })
+    });
+    //支付
+    $('#paypwd').on('click',function(){
+        if (!getInputVal($(".p_regExp"))) {
+            return;//验证数据
+        }
+        var oldpwdp = $.trim($("#oldpwdp").val());
+        var pwdp = $.trim($("#pwdp").val());
+        var repwdp = $.trim($("#repwdp").val());
+        $.ajax({
+            url: "{:U('User/profile')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                'type': 'pay_pwd',
+                'oldpwd': oldpwdp,
+                'pwd': pwdp,
+                'repwd': repwdp
+            },
+        })
+            .done(function(data) {
+                window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+            })
+            .fail(function() {
+                console.log("error:请求失败!");
+            })
+    });
+
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+
+</html>
