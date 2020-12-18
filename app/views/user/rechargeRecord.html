@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>充值记录</title>
+    <script src="__PUBLIC__/Home/js/Adaptive.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/Home/css/style.css">
+</head>
+<body>
+<div class="box">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">充值记录</span>
+    </div>
+    <div class="recharge-record box">
+        <div class="record-title">
+            <span class="name">门店名称</span>
+            <span class="number">充值金额</span>
+            <span class="time">充值时间</span>
+        </div>
+        <div class="record-title">
+            <span class="name">测试</span>
+            <span class="number">300元</span>
+            <span class="time">2017-04-30 21:00:00</span>
+        </div>
+        <div class="record-title">
+            <span class="name">测试</span>
+            <span class="number">300元</span>
+            <span class="time">2017-04-30 21:00:00</span>
+        </div>
+        <div class="record-title">
+            <span class="name">测试</span>
+            <span class="number">300元</span>
+            <span class="time">2017-04-30 21:00:00</span>
+        </div>
+    </div>
+</div>
+
+<div class="nav" id="J_nav">
+    <include file="Public/nav" />
+</div>
+<script src="__PUBLIC__/Home/js/jquery-1.9.1.min.js"></script>
+<script src="__PUBLIC__/Home/js/public.js"></script>
+<script type="text/javascript">
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+</html>
