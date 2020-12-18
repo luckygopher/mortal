@@ -1,20 +1,16 @@
 {
-  "name": "augus/mortal",
-  "description": "PHP Framework",
-  "type": "Framework",
-  "keywords": [
-    "php","php framework"
-  ],
-  "require": {
-    "php":">= 5.3.0",
-    "filp/whoops":"*",
-    "catfan/medoo": "*",
-    "twig/twig": "*"
-  },
-  "repositories": {
-    "packagist": {
-      "type": "composer",
-      "url": "https://packagist.phpcomposer.com"
+    "name": "arvin/mortal",
+    "description": "这是一个简单的学习框架",
+    "authors": [
+        {
+            "name": "qingyunjun",
+            "email": "mr.arvin.hou@gmail.com"
+        }
+    ],
+    "require": {
+        "php":">=5.5.9",
+        "filp/whoops":"*",
+        "catfan/medoo": "*",
+        "twig/twig": "*"
     }
-  }
 }
