@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html >
+
+{% include "public/header.html" %}
+
+<body class="contacts-body">
+<div class="box">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">商家注册</span>
+    </div>
+    <div class="box">
+        <div class="contacts-txt">
+            <span class="name">手机号码：</span>
+            <input type="number" placeholder="请输入手机号码(必填)" id="tel" name="tel" class="regExp">
+        </div>
+        <div class="contacts-txt">
+            <span class="name">登录密码：</span>
+            <input type="password" placeholder="登录密码(必填)" id="pwd" name="pwd" class="regExp">
+        </div>
+        <div class="register-txt">
+            <span class="name">再次输入登录密码：</span>
+            <input type="password" placeholder="再次输入登录密码" id="repwd">
+        </div>
+        <div class="contacts-txt">
+            <span class="name">支付密码：</span>
+            <input type="password" placeholder="支付密码(必填)" id="pay_pwd" name="pay_pwd" class="regExp">
+        </div>
+        <div class="register-txt">
+            <span class="name">再次输入支付密码：</span>
+            <input type="password" placeholder="再次输入支付密码" id="repay_pwd">
+        </div>
+        <div class="register-txt">
+            <span class="name">您的姓名或者称呼:</span>
+            <input type="text" placeholder="您的姓名或者称呼(必填)" id="user_name" name="user_name" class="regExp">
+        </div>
+        <div class="contacts-txt">
+            <span class="name"> 门店名称：</span>
+            <input type="text" placeholder="请输入门店名称(必填)" id="store_name" name="store_name" class="regExp">
+        </div>
+        <div class="contacts-txt">
+            <span class="name"> 门店地址：</span>
+            <input type="text" placeholder="请输入门店地址(必填)" id="store_address" name="store_address" class="regExp">
+        </div>
+        <div class="contacts-txt">
+            <span class="name">邀请码：</span>
+            <input type="text" placeholder="请输入邀请码(选填)" id="invite_code" name="invite_code" class="regExp no">
+        </div>
+        <input type="submit" value="提交" class="contacts-sub" id="contacts-sub">
+    </div>
+</div>
+
+<div class="nav" id="J_nav">
+    {% include "public/nav.html" %}
+</div>
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/public.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+<script>
+    $('#contacts-sub').on('click',function(){
+        if (!getInputVal($(".regExp"))) {
+            return;//验证数据
+        }
+        var tel = $.trim($("#tel").val());
+        var pwd = $.trim($("#pwd").val());
+        var repwd = $.trim($("#repwd").val());
+        var pay_pwd = $.trim($("#pay_pwd").val());
+        var repay_pwd = $.trim($("#repay_pwd").val());
+        var user_name = $.trim($("#user_name").val());
+        var store_name = $.trim($("#store_name").val());
+        var store_address = $.trim($("#store_address").val());
+        var invite_code = $.trim($("#invite_code").val());
+        $.ajax({
+            url: "{:U('User/register')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                'tel': tel,
+                'pwd': pwd,
+                'repwd': repwd,
+                'pay_pwd': pay_pwd,
+                'repay_pwd': repay_pwd,
+                'user_name': user_name,
+                'store_name': store_name,
+                'store_address': store_address,
+                'invite_code': invite_code
+            },
+        })
+            .done(function(data) {
+                window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+            })
+            .fail(function() {
+                console.log("error:请求失败!");
+            })
+    });
+
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+</html>

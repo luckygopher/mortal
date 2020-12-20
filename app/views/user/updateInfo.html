@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body class="contacts-body">
+<div class="box">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">修改资料</span>
+    </div>
+
+    <div class="box" id="loginPassword">
+        <div class="contacts-txt">
+            <span class="name">姓名/称呼：</span>
+            <input type="text" placeholder="请输入姓名／昵称" id="username">
+        </div>
+        <input type="submit" value="提交" class="contacts-sub" id="subname">
+    </div>
+</div>
+<div class="nav" id="J_nav">
+    {% include "public/nav.html" %}
+</div>
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/public.js"></script>
+<script src="{{__PUBLIC__}}/home/js/tabs.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+<script>
+    $('#subname').on('click',function(){
+        var username = $.trim($("#username").val());
+        $.ajax({
+            url: "{:U('User/updateInfo')}",
+            type: 'post',
+            dataType: 'json',
+            data: {'username': username},
+        })
+            .done(function(data) {
+                window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+            })
+            .fail(function() {
+                console.log("error:请求失败!");
+            })
+    });
+
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+
+</html>
