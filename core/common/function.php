@@ -460,3 +460,89 @@ if (! function_exists('download')) {
         }
     }
 }
+
+/**
+ * google api 二维码生成【QRcode可以存储最多4296个字母数字类型的任意文本，具体可以查看二维码数据格式】
+ * @param string $chl 二维码包含的信息，可以是数字、字符、二进制信息、汉字。不能混合数据类型，数据必须经过UTF-8 URL-encoded
+ * @param int $widhtHeight 生成二维码的尺寸设置
+ * @param string $EC_level 可选纠错级别，QR码支持四个等级纠错，用来恢复丢失的、读错的、模糊的、数据。
+ * L-默认：可以识别已损失的7%的数据
+ * M-可以识别已损失15%的数据
+ * Q-可以识别已损失25%的数据
+ * H-可以识别已损失30%的数据
+ * @param int $margin 生成的二维码离图片边框的距离
+ */
+if (! function_exists('generateQRGoogle')) {
+    function generateQRGoogle($chl, $widthHeight ='150', $EC_level='L', $margin='0')
+    {
+        $chl = urlencode($chl);
+        echo '<img src="http://chart.apis.google.com/chart?chs='.$widthHeight.'x'.$widthHeight.'&cht=qr&chld='.$EC_level.'|'.$margin.'&chl='.$chl.'" alt="QR code" widthHeight="'.$widthHeight.'" widthHeight="'.$widthHeight.'"/>';
+    }
+}
+
+/**
+ * 打印类详情
+ * @param $class object 对象
+ */
+if (function_exists('classType')) {
+    function classType($class)
+    {
+        $ref = new \ReflectionClass($class);
+        $br = '<br>';
+        $consts = $ref->getConstants(); //返回所有常量名和值
+        echo "----------------consts:---------------" . $br;
+        foreach ($consts  as $key => $val) {
+            echo "$key : $val" . $br;
+        }
+
+        $props = $ref->getDefaultProperties();  //返回类中所有属性与值类型
+        echo "--------------------props:--------------" . $br . $br;
+        foreach ($props as $key => $val) {
+            echo "$key ::" . gettype($val) . $br;   //  属性名和属性值
+        }
+
+        $methods = $ref->getMethods();     //返回类中所有方法与参数
+        echo "-----------------methods:---------------" . $br . $br;
+        foreach ($methods as $method) {
+            $getParam = $method->getParameters();
+            if(!count($getParam))echo $method->getName();
+            foreach ($getParam as $key=>$value) {
+                echo $method->getName() ."::".$value.' + ';
+            }
+            echo $br;
+        }
+    }
+}
+
+/**
+ * 不显示信息直接跳转
+ *
+ * @param string $url
+ */
+if (function_exists('redirect')) {
+    function redirect($url = '')
+    {
+        if (empty($url)) {
+            if (!empty($_REQUEST['ref_url'])) {
+                $url = $_REQUEST['ref_url'];
+            } else {
+                $url = getReferer();
+            }
+        }
+        header('Location: '.$url);
+        exit();
+    }
+}
+
+/**
+ * 取上一步来源地址
+ *
+ * @param
+ * @return string 字符串类型的返回结果
+ */
+if (function_exists('getReferer')) {
+    function getReferer()
+    {
+        return empty($_SERVER['HTTP_REFERER'])?'':$_SERVER['HTTP_REFERER'];
+    }
+}
