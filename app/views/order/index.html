@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html >
+{% include "public/header.html" %}
+<body>
+<div class="box order">
+    <div class="title">
+        <span>我的订单</span>
+        <!-- <a href="">全部订单></a> -->
+    </div>
+    <ul class="plate box" id="J_plate">
+        <li>
+            <a href="#dqr" class="active">
+                <i class="icon-order1"></i>
+                <p>已提交</p>
+            </a>
+        </li>
+        <li>
+            <a href="#dfh">
+                <i class="icon-order2"></i>
+                <p>待配送</p>
+            </a>
+        </li>
+        <li>
+            <a href="#shfk">
+                <i class="icon-order3"></i>
+                <p>收货付款</p>
+            </a>
+        </li>
+        <li>
+            <a href="#ywc">
+                <i class="icon-order4"></i>
+                <p>已完成</p>
+            </a>
+        </li>
+    </ul>
+    <div class="title2">
+        <a href="Javascript:;">
+            <span class="text">最近订单</span>
+        </a>
+    </div>
+
+    <div class="box">
+        <!-- 已提交 -->
+        <div class="box" id="dqr">
+            <notempty name="_tjList">
+                <volist name="_tjList" id="tjVo">
+                    <div class="order-list">
+                        <a href="{:U('Order/orderDetails?id='.$tjVo['order_num'])}" class="img-box">
+                            <img src="__ROOT__{$tjVo['img']}" alt="图片">
+                        </a>
+                        <div class="text">
+                            <p>{$tjVo['product_name']}...</p>
+                            <p>下单时间：{$tjVo['itime']|strtotime|date="Y-m-d H:i",###}</p>
+                            <p>总价：￥{$tjVo['total_price']}</p>
+                        </div>
+                        <if condition='$tjVo.status eq 1'>
+                            <span class="state" onclick="cancel('{$tjVo.order_num}',$(this))">取消</span>
+                            <elseif condition='$tjVo.status eq 2' />
+                            <span class="state-txt">已取消</span>
+                            <elseif condition='$tjVo.status eq 3' />
+                            <span class="state-txt">已确认</span>
+                            <else />
+                            <span class="state-txt">错误参数</span>
+                        </if>
+                    </div>
+                </volist>
+                <else/>
+                暂无此类订单数据!
+            </notempty>
+        </div>
+        <!-- 待配送 -->
+        <div class="box displayN" id="dfh">
+            <notempty name="_psList">
+                <volist name="_psList" id="psVo">
+                    <div class="order-list">
+                        <a href="{:U('Order/orderDetails?id='.$psVo['order_num'])}" class="img-box">
+                            <img src="__ROOT__{$psVo['img']}" alt="图片">
+                        </a>
+                        <div class="text">
+                            <p>{$psVo['product_name']}...</p>
+                            <p>下单时间：{$psVo['itime']|strtotime|date="Y-m-d H:i",###}</p>
+                            <p>总价：￥{$psVo['total_price']}</p>
+                        </div>
+                        <if condition='$psVo.status eq 4'>
+                            <span class="state-txt">待配送</span>
+                            <else />
+                            <span class="state-txt">错误参数</span>
+                        </if>
+                    </div>
+                </volist>
+                <else/>
+                暂无此类订单数据!
+            </notempty>
+        </div>
+        <!-- 收货付款 -->
+        <div class="box displayN" id="shfk">
+            <notempty name="_shList">
+                <volist name="_shList" id="shVo">
+                    <div class="order-list">
+                        <a href="{:U('Order/orderDetails?id='.$shVo['order_num'])}" class="img-box">
+                            <img src="__ROOT__{$shVo['img']}" alt="图片">
+                        </a>
+                        <div class="text">
+                            <p>{$shVo['product_name']}...</p>
+                            <p>下单时间：{$shVo['itime']|strtotime|date="Y-m-d H:i",###}</p>
+                            <p>总价：￥{$shVo['total_price']}</p>
+                        </div>
+                        <if condition='$shVo.status eq 5'>
+                            <a href="{:U('Order/payment?id='.$shVo['order_num'])}"><span class="state">收货付款</span></a>
+                            <else />
+                            <span class="state-txt">错误参数</span>
+                        </if>
+                    </div>
+                </volist>
+                <else/>
+                暂无此类订单数据!
+            </notempty>
+        </div>
+        <!-- 已完成 -->
+        <div class="box displayN" id="ywc">
+            <notempty name="_wcList">
+                <volist name="_wcList" id="wcVo">
+                    <div class="order-list">
+                        <a href="{:U('Order/orderDetails?id='.$wcVo['order_num'])}" class="img-box">
+                            <img src="__ROOT__{$wcVo['img']}" alt="图片">
+                        </a>
+                        <div class="text">
+                            <p>{$wcVo['product_name']}...</p>
+                            <p>下单时间：{$wcVo['itime']|strtotime|date="Y-m-d H:i",###}</p>
+                            <p>总价：￥{$wcVo['total_price']}</p>
+                        </div>
+                        <if condition='($wcVo.status eq 6) or ($wcVo.status eq 7)'>
+                            <span class="state-txt">已完成</span>
+                            <else />
+                            <span class="state-txt">错误参数</span>
+                        </if>
+                    </div>
+                </volist>
+                <else/>
+                暂无此类订单数据!
+            </notempty>
+        </div>
+    </div>
+
+    <!-- <div class="all-order">查看全部</div> -->
+    <div class="nav" id="J_nav">
+        {% include "public/nav.html" %}
+    </div>
+</div>
+
+<script src="__PUBLIC__/Home/js/jquery-1.9.1.min.js"></script>
+<script src="__PUBLIC__/Home/js/public.js"></script>
+<script src="__PUBLIC__/Home/js/tabs.js"></script>
+<script src="__PUBLIC__/static/customalert/js/xcConfirm.js"></script>
+<script type="text/javascript">
+    $("#paymant").click(function(event) {
+        window.location.href="{#";
+    });
+
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+</html>
