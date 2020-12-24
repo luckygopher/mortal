@@ -1,4 +1,6 @@
 <?php
+namespace core\lib;
+
 class ImageHandler
 {
     public $PICTURE_URL;//要处理的图片
