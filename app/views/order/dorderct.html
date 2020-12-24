@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box dorderct">
+    <div class="title">
+        <span class="text">配送信息</span>
+        <a href="{:U('User/addContacts')}">
+            <span class="right"></span>
+            <span class="add">新增收货人</span>
+        </a>
+    </div>
+
+    <div class="box info">
+        <div class="time-box">
+            <span class="text">配送时间</span>
+            <select id="expectedTime" class="select" >
+                <volist name="_timeInfo" id="tf">
+                    <option value="{$tf['id']}">{$tf['expected_time']}</option>
+                </volist>
+            </select>
+
+        </div>
+        <div class="time-box">
+            <span class="text">门店地址</span>
+            <input type="text" id="address" value="{$userInfo['store_address']}" readonly="readonly">
+        </div>
+        <div class="time-box">
+            <span class="text">收货联系人</span>
+            <select id="contact" class="select">
+                <volist name="_contactInfo" id="cf">
+                    <option value="{$cf['id']}">{$cf['name']}</option>
+                </volist>
+            </select>
+
+        </div>
+    </div>
+    <div class="title">
+        <a href="Javascript:;">
+            <span class="text">订单详情</span>
+        </a>
+    </div>
+    <volist name="_list" id="vo">
+        <div class="order-info box">
+            <img src="__ROOT__{$vo['path']}" alt="">
+            <div class="text">
+                <p>{$vo['product_name']}({$vo['lname']})</p>
+                <p>X{$vo['buy_num']}</p>
+            </div>
+            <span class="price">￥{$vo['price']}/{$vo['uname']}</span>
+        </div>
+    </volist>
+    <input type="hidden" id="shop" value='{$listJson}' />
+    <div class="box info">
+            <textarea id="note" cols="30" rows="10" placeholder="备注：请写下您的额外要求（如在这里新增菜
+品订购，我们不一定能满足您的需求，敬请谅解）"></textarea>
+        <p class="price-num">
+            总计：￥{$total}
+            <input type="hidden" id="totalPrice" value="{$total}" />
+        </p>
+    </div>
+
+    <div class="submit-box">
+        <input type="submit" value="提交订单" id="tjorder">
+    </div>
+</div>
+
+<script src="__PUBLIC__/Home/js/jquery-1.9.1.min.js"></script>
+<script src="__PUBLIC__/static/customalert/js/xcConfirm.js"></script>
+<script type="text/javascript">
+    $("#tjorder").on('click', function() {
+        var expectedTime = $("#expectedTime").val();
+        var address = $("#address").val();
+        var contact = $("#contact").val();
+        var shop = $("#shop").val();
+        var note = $("#note").val();
+        var totalPrice = $("#totalPrice").val();
+        var shouldPrice = $("#shouldPrice").val();
+
+        if (contact == null) {
+            window.wxc.xcConfirm('必须为订单选择一位联系人!', window.wxc.xcConfirm.typeEnum.info);
+            return;
+        }
+        if (shop == null) {
+            var urll = "{:U('Index/index')}";
+            window.wxc.xcConfirm('该订单商品列表为空!', window.wxc.xcConfirm.typeEnum.info,urll);
+            return;
+        }
+        $.ajax({
+            url: "{:U()}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                expectedTime: expectedTime,
+                address: address,
+                contact: contact,
+                shop: shop,
+                note: note,
+                totalPrice: totalPrice
+            },
+            success: function(data){
+                if (data == 1) {
+                    var url = "{:U('Order/index')}";
+                    window.wxc.xcConfirm('订单提交成功!', window.wxc.xcConfirm.typeEnum.info,url);
+                }else{
+                    window.wxc.xcConfirm('订单提交失败!', window.wxc.xcConfirm.typeEnum.info);
+                }
+
+            }
+        })
+
+    });
+</script>
+</body>
+
+</html>
