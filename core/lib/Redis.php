@@ -271,4 +271,257 @@ class Redis {
         return $this->redisObj[$this->sn]->ZSCORE($key, $member);
     }
     /*------------------------------------sort set结构 end----------------------------------------------------*/
+    /*------------------------------------hash结构 start----------------------------------------------------*/
+    /**
+     * 增,以json格式插入数据到缓存,hash类型
+     * @param $redis_key |array , $redis_key['key']数据库的表名称;$redis_key['field'],下标key
+     * @param $token,该活动的token,用于区分标识
+     * @param $id,该活动的ID,用于区分标识
+     * @param $data|array ,要插入的数据,
+     * @param $timeOut, 过期时间,默认为0
+     * @return $number 插入成功返回1【,更新操作返回0】
+     */
+    public function hset_json($redis_key, $token, $id, $data, $timeOut = 0) {
+        $redis_table_name = $redis_key['key'] . ':' . $token; //key的名称
+        $redis_key_name = $redis_key['field'] . ':' . $id; //field的名称,表示第几个活动
+        $redis_info = json_encode($data); //field的数据value,以json的形式存储
+        $re = $this->redisObj[$this->sn]->hSet($redis_table_name, $redis_key_name, $redis_info); //存入缓存
+        if ($timeOut > 0) {
+            $this->redisObj[$this->sn]->expire($redis_table_name, $timeOut);
+        }
+        //设置过期时间
+        return $re;
+    }
+
+    /**
+     * 查,json形式存储的哈希缓存,有值则返回;无值则查询数据库并存入缓存
+     * @param $redis,$redis['key'],$redis['field']分别是hash的表名称和键值
+     * @param $token,$token为公众号
+     * @param $token,$id为活动ID
+     * @return bool|array, 成功返回要查询的信息,失败或不存在返回false
+     */
+    public function hget_json($redis_key, $token, $id) {
+        $re = $this->redisObj[$this->sn]->hexists($redis_key['key'] . ':' . $token, $redis_key['field'] . ':' . $id); //返回缓存中该hash类型的field是否存在
+        if ($re) {
+            $info = $this->redisObj[$this->sn]->hget($redis_key['key'] . ':' . $token, $redis_key['field'] . ':' . $id);
+            $info = json_decode($info, true);
+        } else {
+            $info = false;
+        }
+        return $info;
+    }
+
+    public function hset($redis_key, $name, $data, $timeOut = 0) {
+        $re = $this->redisObj[$this->sn]->hset($redis_key, $name, $data);
+        if ($timeOut > 0) {
+            $this->redisObj[$this->sn]->expire($redis_key, $timeOut);
+        }
+
+        return $re;
+    }
+
+    /**
+     * 增,普通逻辑的插入hash数据类型的值
+     * @param $key ,键名
+     * @param $data |array 一维数组,要存储的数据
+     * @param $timeOut |num  过期时间
+     * @return $number 返回OK【更新和插入操作都返回ok】
+     */
+    public function hmset($key, $data, $timeOut = 0) {
+        $re = $this->redisObj[$this->sn]->hmset($key, $data);
+        if ($timeOut > 0) {
+            $this->redisObj[$this->sn]->expire($key, $timeOut);
+        }
+
+        return $re;
+    }
+
+    /**
+     * 查,普通的获取值
+     * @param $key,表示该hash的下标值
+     * @return array 。成功返回查询的数组信息,不存在信息返回false
+     */
+    public function hval($key) {
+        $re = $this->redisObj[$this->sn]->exists($key); //存在返回1,不存在返回0
+        if (!$re) {
+            return false;
+        }
+
+        $vals = $this->redisObj[$this->sn]->hvals($key);
+        $keys = $this->redisObj[$this->sn]->hkeys($key);
+        $re = array_combine($keys, $vals);
+        foreach ($re as $k => $v) {
+            if (!is_null(json_decode($v))) {
+                $re[$k] = json_decode($v, true); //true表示把json返回成数组
+            }
+        }
+        return $re;
+    }
+
+    /**
+     *
+     * @param $key
+     * @param $filed
+     * @return bool|string
+     */
+    public function hget($key, $filed = []) {
+        if (empty($filed)) {
+            $re = $this->redisObj[$this->sn]->hgetAll($key);
+        } elseif (is_string($filed)) {
+            $re = $this->redisObj[$this->sn]->hget($key, $filed);
+        } elseif (is_array($filed)) {
+
+            $re = $this->redisObj[$this->sn]->hMget($key, $filed);
+        }
+        if (!$re) {
+            return false;
+        }
+        return $re;
+    }
+
+    public function hsetAll($redis_key, $name, $data, $timeOut = 0) {
+        $re = $this->redisObj[$this->sn]->hset($redis_key, $name, $data);
+        if ($timeOut > 0) {
+            $this->redisObj[$this->sn]->expire($redis_key, $timeOut);
+        }
+
+        return $re;
+    }
+
+    public function hdel($redis_key, $name) {
+        $re = $this->redisObj[$this->sn]->hdel($redis_key, $name);
+        return $re;
+    }
+
+    /*------------------------------------hash结构 end----------------------------------------------------*/
+
+    /*------------------------------------其他结构----------------------------------------------------*/
+    /**
+     * 设置自增,自减功能
+     * @param $key ,要改变的键值
+     * @param int $num ,改变的幅度,默认为1
+     * @param string $member ,类型是zset或hash,需要在输入member或filed字段
+     * @param string $type,类型,default为普通增减,还有:zset,hash
+     * @return bool|int 成功返回自增后的scroll整数,失败返回false
+     */
+    public function incre($key, $num = 1, $member = '', $type = '') {
+        $num = intval($num);
+        switch (strtolower(trim($type))) {
+            case "zset":
+                $re = $this->redisObj[$this->sn]->zIncrBy($key, $num, $member); //增长权值
+                break;
+            case "hash":
+                $re = $this->redisObj[$this->sn]->hincrby($key, $member, $num); //增长hashmap里的值
+                break;
+            default:
+                if ($num > 0) {
+                    $re = $this->redisObj[$this->sn]->incrby($key, $num); //默认增长
+                } else {
+                    $re = $this->redisObj[$this->sn]->decrBy($key, -$num); //默认增长
+                }
+                break;
+        }
+        if ($re) {
+            return $re;
+        }
+
+        return false;
+    }
+
+    /**
+     * 清除缓存
+     * @param int $type 默认为0,清除当前数据库；1表示清除所有缓存
+     */
+    function flush($type = 0) {
+        if ($type) {
+            $this->redisObj[$this->sn]->flushAll(); //清除所有数据库
+        } else {
+            $this->redisObj[$this->sn]->flushdb(); //清除当前数据库
+        }
+    }
+
+    /**
+     * 检验某个键值是否存在
+     * @param $keys ,键值
+     * @param string $type,类型,默认为常规
+     * @param string $field。若为hash类型,输入$field
+     * @return bool
+     */
+    public function exists($keys, $type = '', $field = '') {
+        switch (strtolower(trim($type))) {
+            case 'hash':
+                $re = $this->redisObj[$this->sn]->hexists($keys, $field); //有返回1,无返回0
+                break;
+            default:
+                $re = $this->redisObj[$this->sn]->exists($keys);
+                break;
+        }
+        return $re;
+    }
+
+    /**
+     * 删除缓存
+     * @param string|array $key,键值
+     * @param $type,类型,默认为常规,还有hash,zset
+     * @param string $field,hash=>表示$field值,set=>表示value,zset=>表示value值,list类型特殊暂时不加
+     * @return int | ,返回删除的个数
+     */
+    public function delete($key, $type = "default", $field = '') {
+        switch (strtolower(trim($type))) {
+            case 'hash':
+                $re = $this->redisObj[$this->sn]->hDel($key, $field); //返回删除个数
+                break;
+            case 'set':
+                $re = $this->redisObj[$this->sn]->sRem($key, $field); //返回删除个数
+                break;
+            case 'zset':
+                $re = $this->redisObj[$this->sn]->zDelete($key, $field); //返回删除个数
+                break;
+            default:
+                $re = $this->redisObj[$this->sn]->del($key); //返回删除个数
+                break;
+        }
+        return $re;
+    }
+
+    //日志记录
+    public function logger($log_content, $position = 'user') {
+        $max_size = 1000000; //声明日志的最大尺寸1000K
+
+        $log_dir = './log'; //日志存放根目录
+
+        if (!file_exists($log_dir)) {
+            mkdir($log_dir, 0777);
+        }
+        //如果不存在该文件夹,创建
+
+        if ($position == 'user') {
+            $log_filename = "{$log_dir}/User_redis_log.txt"; //日志名称
+        } else {
+            $log_filename = "{$log_dir}/Wap_redis_log.txt"; //日志名称
+        }
+
+        //如果文件存在并且大于了规定的最大尺寸就删除了
+        if (file_exists($log_filename) && (abs(filesize($log_filename)) > $max_size)) {
+            unlink($log_filename);
+        }
+
+        //写入日志,内容前加上时间, 后面加上换行, 以追加的方式写入
+        file_put_contents($log_filename, date('Y-m-d_H:i:s') . " " . $log_content . "\n", FILE_APPEND);
+    }
+
+    function __destruct() {
+        //  $this->redisObj[$this->sn]->close();
+    }
+
+    /**
+     * 魔术方法 有不存在的操作的时候执行
+     * @access public
+     * @param string $method 方法名
+     * @param array $args 参数
+     * @return mixed
+     */
+    public function __call($method, $args) {
+        call_user_func_array([$this->redisObj[$this->sn], $method], $args);
+    }
 }
