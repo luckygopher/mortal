@@ -90,4 +90,60 @@ class Redis {
         return $setRes;
     }
     /*------------------------------------string结构 end----------------------------------------------------*/
+    /*------------------------------------list结构 start----------------------------------------------------*/
+    /**
+     * 增,构建一个列表(先进后去,类似栈)
+     * @param String $key KEY名称
+     * @param string $value 值
+     * @param $timeOut |num  过期时间
+     */
+    public function lpush($key, $value, $timeOut = 0) {
+        $re = $this->redisObj[$this->sn]->LPUSH($key, $value);
+        if ($timeOut > 0) {
+            $this->redisObj[$this->sn]->expire($key, $timeOut);
+        }
+
+        return $re;
+    }
+
+    /**
+     * 增,构建一个列表(先进先去,类似队列)
+     * @param string $key KEY名称
+     * @param string $value 值
+     * @param $timeOut |num  过期时间
+     */
+    public function rpush($key, $value, $timeOut = 0) {
+        $re = $this->redisObj[$this->sn]->RPUSH($key, $value);
+        if ($timeOut > 0) {
+            $this->redisObj[$this->sn]->expire($key, $timeOut);
+        }
+
+        return $re;
+    }
+
+    /**
+     * 查,获取所有列表数据（从头到尾取）
+     * @param string $key KEY名称
+     * @param int $head  开始
+     * @param int $tail     结束
+     */
+    public function lranges($key, $head, $tail) {
+        return $this->redisObj[$this->sn]->lrange($key, $head, $tail);
+    }
+
+    /**
+     * Power by Mikkle
+     * QQ:776329498
+     * @param $key
+     * @return mixed
+     */
+
+    public function rpop($key) {
+        return $this->redisObj[$this->sn]->rPop($key);
+    }
+    public function lpop($key) {
+        return $this->redisObj[$this->sn]->lpop($key);
+    }
+
+    /*------------------------------------list结构 end----------------------------------------------------*/
 }
