@@ -125,6 +125,49 @@ class Excel
         }
     }
 
+    //取得总列数
+    private function maxCols()
+    {
+        $i=1;
+        while(true)
+        {
+            if(0==$this->worksheet->Cells(1,$i))
+            {
+                return $i;
+                break;
+            }
+            $i++;
+        }
+    }
+
+    //取得总行数
+    private function maxRows()
+    {
+        $i=1;
+        while(true)
+        {
+            if(0==$this->worksheet->Cells($i,1))
+            {
+                return $i;
+                break;
+            }
+            $i++;
+        }
+    }
+
+    //读取指定行数据
+    public function getOneRow($row=2)
+    {
+        if($row>=2)
+        {
+            for($i=1;$i<$this->maxcols;$i++)
+            {
+                $arr[]=$this->worksheet->Cells($row,$i)->Value;
+            }
+            return $arr;
+        }
+    }
+
     //关闭对象
     public function Close()
     {
