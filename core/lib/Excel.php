@@ -93,6 +93,38 @@ class Excel
         return $this->fields;
     }
 
+    //修改指定单元格内容
+    public function editCell($row,$col,$value)
+    {
+        if($this->workbook==null || $this->worksheet==null)
+        {
+            echo "Error:Did Not Connect!";
+        }else{
+            $this->worksheet->Cells($row,$col)->Value=$value;
+            $this->workbook->Save();
+        }
+    }
+
+    //修改一行数据
+    public function editOneRow($row,$arr)
+    {
+        if($this->workbook==null || $this->worksheet==null || $row>=2)
+        {
+            echo "Error:Did Not Connect!";
+        }else{
+            if(count($arr)==$this->maxcols-1)
+            {
+                $i=1;
+                foreach($arr as $val)
+                {
+                    $this->worksheet->Cells($row,$i)->Value=$val;
+                    $i++;
+                }
+                $this->workbook->Save();
+            }
+        }
+    }
+
     //关闭对象
     public function Close()
     {
