@@ -1,0 +1,23 @@
+{% block footer %}
+<div class="footer-box"></div>
+<footer class="footer">
+    <a href="/Index/index" class="active">
+        <i class="icon-home"></i>
+        <span class="home-text">首页</span>
+    </a>
+    <a href="/ShopCar/index">
+        <i class="icon-shopping-care"></i>
+        <span class="shopping-care-text">购物车</span>
+        <span id='car_num'>121</span>
+    </a>
+    <a href="/User/index">
+        <i class="icon-user"></i>
+        <span class="user-text">个人</span>
+    </a>
+</footer>
+
+<script src="{{__PUBLIC__}}/home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/swiper.jquery.min.js"></script>
+<script src="{{__PUBLIC__}}/home/js/tabs.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+{% endblock %}
