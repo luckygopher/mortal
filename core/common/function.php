@@ -551,8 +551,9 @@ if (function_exists('getReferer')) {
 * 时间轴函数, Unix 时间戳
 * @param int $time 时间
 */
-if (function_exists()) {
-    function TranTime($time) {
+if (function_exists('tranTime')) {
+    function tranTime($time)
+    {
         $nowTime = time ();
         $message = '';
         //一年前
