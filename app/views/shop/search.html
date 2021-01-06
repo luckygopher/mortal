@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box list">
+    <div class="title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">搜索食材</span>
+        <a href="{:U('Shopcar/index')}" class="icon-shopping-care"></a>
+    </div>
+    <div class="search">
+        <i class="icon-search"></i>
+        <input type="text" oninput="changeVal(this.value)" onpropertychange="changeVal(this.value)" placeholder="请输入食材关键字">
+    </div>
+    <div id="searchCt">
+        <notempty name="_list">
+            <volist name="_list" id="vo">
+                <div class="box list-content">
+                    <a href="{:U('Shop/pinfo?id='.$vo['id'])}" class="displayB fl img-box">
+                        <img src="__ROOT__{$vo['path']}" alt="">
+                    </a>
+                    <div class="text">
+                        <p class="title-txt">
+                            <a href="{:U('Shop/pinfo?id='.$vo['id'])}">{$vo['product_name']}({$vo['lname']})</a>
+                        </p>
+                        <p class="txt">{$vo['description']}</p>
+                        <p class="price">
+                            <span>￥{$vo['price']}/{$vo['uname']}</span>({$vo['minimum_purchases']}{$vo['uname']}起购)
+                        </p>
+                        <i class="icon-shopping-care" onclick="addCar({$vo['id']},{$vo['minimum_purchases']})"></i>
+                    </div>
+                </div>
+            </volist>
+            <else/>
+            <div class="text">aOh! 暂时还没有内容! </div>;
+        </notempty>
+    </div>
+    <div class="nav" id="J_nav">
+        {% include "public/nav.html" %}
+    </div>
+</div>
+
+<script src="__PUBLIC__/Home/js/jquery-1.9.1.min.js"></script>
+<script src="__PUBLIC__/Home/js/public.js"></script>
+<script src="__PUBLIC__/static/customalert/js/xcConfirm.js"></script>
+<script type="text/javascript">
+    /**
+     * [changeVal 监听搜索input值的改变，执行ajax]
+     * @Author   Augus
+     * @DateTime 2017-07-30T16:01:43+0800
+     */
+    function changeVal(keyWord){
+        if (!RegeMatch(keyWord)) {
+            //非法字符
+            $(".search input").val('');
+            $(".search input").focus();
+        }else{
+            $.ajax({
+                url: "{:U('Shop/search')}",
+                type: 'post',
+                dataType: 'json',
+                data: {keyWord: keyWord},
+                success: function(data){
+                    var str = "";
+                    var url = "";
+                    var minimum;
+                    var pid;
+                    if (JSON.stringify(data) != 'null') {
+                        for (var i = 0; i < data.length; i++) {
+                            pid = data[i]['id'];//获取产品id
+                            minimum = data[i]['minimum_purchases'];
+                            url = "{:U('Shop/pinfo?id=pid')}";//将js变量以字符串传入U函数
+                            url = url.replace('pid',pid);//将传入的js变量字符串替换为真实的js变量
+
+                            str +="<div class='box list-content'>";
+                            str +="<a href='"+url+"' class='displayB fl img-box'><img src='__ROOT__"+data[i]['path']+"' alt=''></a>";
+                            str +="<div class='text'><p class='title-txt'>";
+                            str +="<a href='"+url+"'>"+data[i]['product_name']+"("+data[i]['lname']+")</a></p>";
+                            str +="<p class='txt'>"+data[i]['description']+"</p>";
+                            str +="<p class='price'><span>￥"+data[i]['price']+"/"+data[i]['uname']+"</span>("+minimum+data[i]['uname']+"起购)</p>";
+                            str +="<i class='icon-shopping-care' onclick='addCar("+pid+","+minimum+")'></i></div></div>";
+                        }
+                    }else{
+                        str = '<div class="text">aOh! 暂时还没有内容! </div>';
+                    }
+
+                    $("#searchCt").html(str);
+                }
+            })
+        }
+    }
+    //添加至购物车
+    function addCar(id,num) {
+        $.ajax({
+            url: "{:U('Shopcar/addShop')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                pid: id,
+                num: num
+            },
+            success: function(data){
+                if (data.status == 200) {
+                    window.wxc.xcConfirm('商品已添加到购物车!', window.wxc.xcConfirm.typeEnum.info);
+                }else{
+                    window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+                }
+            }
+        });
+    }
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+</html>

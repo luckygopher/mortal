@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box pinfo">
+    <div class="swiper-container pinfo-banner" id="J_pinfo">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                <a href="">
+                    <img src="__ROOT__{$info.path}" class="display" width="100%" alt="">
+                </a>
+            </div>
+            <div class="swiper-slide">
+                <a href="">
+                    <img src="__ROOT__{$info.path}" class="display" width="100%" alt="">
+                </a>
+            </div>
+            <div class="swiper-slide">
+                <a href="">
+                    <img src="__ROOT__{$info.path}" class="display" width="100%" alt="">
+                </a>
+            </div>
+        </div>
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="sign-out"></a>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <div class="pinfo-txt1 box">
+        <p class="text1">{$info.product_name}</p>
+        <p class="text2">{$info.description}</p>
+        <p class="text3">￥{$info.price}/{$info.uname}({$info.minimum_purchases}{$info.uname}起购)</p>
+    </div>
+    <div class="pl-box"></div>
+
+    <div class="box pinfo-txt2">
+        <div class="info"><span>规格参数</span></div>
+        <div class="info">产地   :    {$info.origin}</div>
+        <div class="info">计价单位   :   {$info.uname}</div>
+        <div class="info">起购数量   :   <span id="minimum">{$info.minimum_purchases}</span>{$info.uname}</div>
+        <div class="info">等级   :   {$info.lname}</div>
+        <div class="info">存储条件   :   {$info.storage_conditions}</div>
+        <div class="info">种类   :   {$info.cname}</div>
+    </div>
+    <div class="pl-box"></div>
+    <div class="pinfo-num">
+        <span class="txt">数量   : </span>
+        <div class="num-box">
+            <i class="icon-reduce" id="J_reduce"></i>
+            <if condition='$is_car eq 0'>
+                <input class="num" id="J_num" value="{$info.minimum_purchases}" />
+                <else />
+                <input class="num" id="J_num" value="1" />
+            </if>
+            <i class="icon-add" id="J_add"></i>
+        </div>
+    </div>
+
+    <div class="footer-box"></div>
+    <div class="pinfo-shopping-care">
+        <div class="left">
+            <a href="{:U('Shopcar/index')}">
+                <i class="icon-care1"></i>
+                <span>进入购物车</span>
+                <span id="number">
+                <if condition='$carNum eq 0'>
+                <else />
+                {$carNum}
+                </if>
+                </span>
+            </a>
+        </div>
+        <div class="right">
+            <i class="icon-care2"></i>
+            <span>加入购物车</span>
+        </div>
+    </div>
+</div>
+
+<script src="{{__PUBLIC__}}/Home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/Home/js/swiper.jquery.min.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+<script>
+    var swiper = new Swiper('#J_pinfo', {
+        pagination: '.swiper-pagination',
+        paginationClickable: true
+    });
+
+    var $minimumEl = $('#minimum');//获取起购数量
+    var $minimum = $minimumEl.text();
+    //减
+    $('#J_reduce').on('click',function(){
+        var $numEl = $('#J_num');
+        var $num = $numEl.val();
+        if ({$is_car} == 0) {
+            if($num*1 <= $minimum*1){
+                $num = $minimum;
+                window.wxc.xcConfirm("该商品起购数量为"+$minimum, window.wxc.xcConfirm.typeEnum.info);
+            }else{
+                $num--;
+            }
+        }else{
+            if ($num*1 == 1) {
+                $num = 1;
+                window.wxc.xcConfirm("数量至少为1", window.wxc.xcConfirm.typeEnum.info);
+            }else{
+                $num--;
+            }
+        }
+        $numEl.val($num);
+    });
+    //加
+    $('#J_add').on('click',function(){
+        var $numEl = $('#J_num');
+        var $num = $numEl.val();
+        $num++;
+        $numEl.val($num);
+    });
+    //input失去焦点
+    $('#J_num').blur(function() {
+        $num = $(this).val();
+        if ({$is_car} == 0) {
+            if($num*1 <= $minimum*1){
+                $num = $minimum;
+                window.wxc.xcConfirm("该商品起购数量为"+$minimum, window.wxc.xcConfirm.typeEnum.info);
+            }
+        }else{
+            if ($num*1 == 1) {
+                $num = 1;
+                window.wxc.xcConfirm("数量至少为1", window.wxc.xcConfirm.typeEnum.info);
+            }
+        }
+        $(this).val($num);
+    });
+
+    //加入购物车
+    $(".right").on('click', function() {
+        var number = $('#J_num').val()
+        var id = {$info.id};
+        $.ajax({
+            url: "{:U('Shopcar/addEditShop')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                pid: id,
+                num: number
+            },
+            success: function(data){
+                if (data.status == 200) {
+                    $("#number").text(data.num);
+                    window.wxc.xcConfirm('商品已添加到购物车!', window.wxc.xcConfirm.typeEnum.info);
+                }else{
+                    window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+                }
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

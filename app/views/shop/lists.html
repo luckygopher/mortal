@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box list">
+    <div class="title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">{$title.name}</span>
+        <a href="{:U('Shopcar/index')}" class="icon-shopping-care"></a>
+    </div>
+    <notempty name="_list">
+        <volist name="_list" id="vo">
+            <div class="box list-content">
+                <a href="{:U('Shop/pinfo?id='.$vo['id'])}" class="displayB fl img-box">
+                    <img src="__ROOT__{$vo.path}" alt="">
+                </a>
+                <div class="text">
+                    <p class="title-txt">
+                        <a href="{:U('Shop/pinfo?id='.$vo['id'])}">{$vo.product_name}({$vo.lname})</a>
+                    </p>
+                    <p class="txt">{$vo.description}</p>
+                    <p class="price">
+                        <span>￥{$vo.price}/{$vo.uname}</span>({$vo.minimum_purchases}{$vo.uname}起购)
+                    </p>
+                    <i class="icon-shopping-care" onclick="addCar({$vo['id']},{$vo['minimum_purchases']})"></i>
+                </div>
+            </div>
+        </volist>
+        <else/>
+        <div class="text">aOh! 暂时还没有内容! </div>
+    </notempty>
+
+    <div class="nav" id="J_nav">
+        {% include "public/nav.html" %}
+    </div>
+</div>
+
+<script src="__PUBLIC__/Home/js/jquery-1.9.1.min.js"></script>
+<script src="__PUBLIC__/Home/js/public.js"></script>
+<script src="__PUBLIC__/static/customalert/js/xcConfirm.js"></script>
+<script type="text/javascript">
+    function addCar(id,num) {
+        $.ajax({
+            url: "{:U('Shopcar/addShop')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                pid: id,
+                num: num
+            },
+            success: function(data){
+                if (data.status == 200) {
+                    window.wxc.xcConfirm('商品已添加到购物车!', window.wxc.xcConfirm.typeEnum.info);
+                }else{
+                    window.wxc.xcConfirm(data.info, window.wxc.xcConfirm.typeEnum.info,data.url);
+                }
+            }
+        });
+    }
+
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+</script>
+</body>
+</html>
