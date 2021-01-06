@@ -15,12 +15,13 @@ class Mortal
     static public function run()
     {
         Log::init();
-        self::appView();
         $obj = new Route();
+        $appName = $obj->appName;
         $controllerName = $obj->controller;
         $action = $obj->action;
-        $classPath = APP.'/controller/'.$controllerName.'Controller.php';
-        $newClass = '\\app\\controller\\'.$controllerName.'Controller';
+        self::appView($appName);
+        $classPath = APP.'/'.$appName.'/controller/'.$controllerName.'Controller.php';
+        $newClass = '\\app\\'.$appName.'\\controller\\'.$controllerName.'Controller';
         if(is_file($classPath)){
             $classObj = new $newClass();
             if(method_exists($classObj,$action)){
@@ -49,9 +50,9 @@ class Mortal
      * 2、写入全局变量到模版
      * @return void
      */
-    static private function appView()
+    static private function appView($appName)
     {
-        $loader = new \Twig_Loader_Filesystem(APP.'/views');
+        $loader = new \Twig_Loader_Filesystem(APP.'/'.$appName.'/views');
         $twig = new \Twig_Environment($loader, array(
             'cache' => ROOT.'/storage/cache',
             'debug' => DEBUG,

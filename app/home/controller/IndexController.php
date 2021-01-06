@@ -1,5 +1,5 @@
 <?php
-namespace app\controller;
+namespace app\home\controller;
 
 use core\Mortal;
 use core\lib\FileUpload;
