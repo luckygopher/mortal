@@ -611,3 +611,33 @@ if (! function_exists("dd")) {
         var_dump($data);die();
     }
 }
+
+/**
+ * todo 待实现
+ */
+if (! function_exists("I")) {
+    function I()
+    {
+
+    }
+}
+
+/**
+ * todo 待实现
+ */
+if (! function_exists("D")) {
+    function D()
+    {
+
+    }
+}
+
+/**
+ * todo 待实现
+ */
+if (! function_exists("M")) {
+    function M()
+    {
+
+    }
+}
