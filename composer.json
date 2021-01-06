@@ -13,6 +13,20 @@
         "catfan/medoo": "*",
         "twig/twig": "*",
         "phpmailer/phpmailer": "^6.2",
-        "dompdf/dompdf": "*"
+        "dompdf/dompdf": "*",
+        "dodgepudding/wechat-php-sdk": "*",
+        "elasticsearch/elasticsearch": "^7.0",
+        "getkirby/editor": "*"
+    },
+    "autoload": {
+        "classmap": [
+            "core/"
+        ],
+        "psr-4": {
+            "app\\": "app/"
+        },
+        "files": [
+            "core/common/function.php"
+        ]
     }
 }

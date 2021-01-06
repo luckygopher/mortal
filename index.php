@@ -23,9 +23,4 @@ if (DEBUG) {
     ini_set('display_errors', 'off');
 }
 
-include CORE.'/common/function.php';
-include CORE.'/Mortal.php';
-
-spl_autoload_register('core\Mortal::load');
-
 core\Mortal::run();

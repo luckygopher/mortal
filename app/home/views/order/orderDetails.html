@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box dorderct">
+    <div class="orderD" id="J_orderDetails">
+        <a href="#ddxq" class="active">订单详情</a>
+        <a href="#wlxq">物流详情</a>
+    </div>
+    <div class="box">
+        <div class="box" id="ddxq">
+            <div class="title">
+                <a href="Javascript:;">
+                    <span class="text">配送信息</span>
+                </a>
+            </div>
+            <div class="box info">
+                <div class="time-box">
+                    <span class="text">配送时间</span>
+                    <input type="text" value="{$info['expected_time']}" readonly>
+                </div>
+                <div class="time-box">
+                    <span class="text">门店地址</span>
+                    <input type="text" value="{$info['store_address']}" readonly>
+                </div>
+                <div class="time-box">
+                    <span class="text">收货联系人</span>
+                    <input type="text"  readonly value="{$info['contact_name']}">
+                </div>
+            </div>
+            <div class="title">
+                <a href="Javascript:;">
+                    <span class="text">商品信息</span>
+                </a>
+            </div>
+            <notempty name="_list">
+                <if condition="($info['status'] eq 5) or ($info['status'] eq 6) or ($info['status'] eq 7)">
+                    <volist name="_list" id="vo">
+                        <div class="order-info orderDetailsList box">
+                            <img src="__ROOT__{$vo['img']}" alt="">
+                            <div class="text">
+                                <p>{$vo['product_name']}({$vo['level']})</p>
+                                <p>下单量：{$vo['buy_num']}</p>
+                                <p>采购量：{$vo['purchase_num']}</p>
+                                <p>单价：￥{$vo['price']}/{$vo['unit']}</p>
+                            </div>
+                        </div>
+                    </volist>
+                    <else />
+                    <volist name="_list" id="vo">
+                        <div class="order-info orderDetailsList box">
+                            <img src="__ROOT__{$vo['img']}" alt="">
+                            <div class="text">
+                                <p>{$vo['product_name']}({$vo['level']})</p>
+                                <p>下单量：{$vo['buy_num']}</p>
+                                <p>单价：￥{$vo['price']}/{$vo['unit']}</p>
+                            </div>
+                        </div>
+                    </volist>
+                </if>
+                <else/>
+                无订单数据!
+            </notempty>
+
+            <div class="order-details-price">
+                <span>总计：￥{$info['total_price']}</span>
+                <if condition="($info['status'] eq 5) or ($info['status'] eq 6) or ($info['status'] eq 7)">
+                    <span>采购：￥{$info['money']}</span>
+                    <span>应付：<span class="num">￥{$info['should_pay']}</span></span>
+                    <else />
+                </if>
+            </div>
+
+            <div class="title">
+                <a href="Javascript:;">
+                    <span class="text">订单信息</span>
+                </a>
+            </div>
+            <div class="box info">
+                <div class="time-box">
+                    <span class="text">订单号码</span>
+                    <input type="text" value="{$info['order_num']}" readonly>
+                </div>
+                <div class="time-box">
+                    <span class="text">下单时间</span>
+                    <input type="text" value="{$info['itime']}" readonly>
+                </div>
+                <if condition='($info.status eq 6) or ($info.status eq 7)'>
+                    <div class="time-box">
+                        <span class="text">支付方式</span>
+                        <if condition="$info['pay_way'] eq 1">
+                            <input type="text"  readonly value="余额支付">
+                            <elseif condition="$info['pay_way'] eq 2" />
+                            <input type="text"  readonly value="现金支付">
+                            <else />
+                        </if>
+                    </div>
+                    <else />
+                </if>
+            </div>
+            <if condition='$info.status eq 1'>
+                <input type="button" value="取消" class="order-details-btn" onclick="cancel('{$info.order_num}')">
+                <elseif condition='$info.status eq 2' />
+                <input type="button" value="已取消" class="order-details-btn" readonly>
+                <elseif condition='$info.status eq 3' />
+                <input type="button" value="已确认" class="order-details-btn" readonly>
+                <elseif condition='$info.status eq 4' />
+                <input type="button" value="待配送" class="order-details-btn" readonly>
+                <elseif condition='$info.status eq 5' />
+                <a href="{:U('Order/payment?id='.$info['order_num'])}"><input type="button" value="收货付款" class="order-details-btn"></a>
+                <elseif condition='($info.status eq 6) or ($info.status eq 7)' />
+                <input type="button" value="订单已完成" class="order-details-btn" readonly>
+                <else />
+            </if>
+        </div>
+
+        <div class="box displayN" id="wlxq">
+            <ul class="logistics">
+                <notempty name="_log">
+                    <volist name="_log" id="lg">
+                        <li>
+                            <i class="icon1 active"></i>
+                            <div class="text">
+                                <span class="txt">{$lg['operation']}</span>
+                                <span class="time">{$log['operation_time']}</span>
+                            </div>
+                        </li>
+                    </volist>
+                    <else/>
+                    暂无数据!
+                </notempty>
+            </ul>
+        </div>
+
+    </div>
+    <div class="nav" id="J_nav">
+        {% include "public/nav.html" %}
+    </div>
+</div>
+
+<script src="{{__PUBLIC__}}/Home/js/jquery-1.9.1.min.js"></script>
+<script src="{{__PUBLIC__}}/Home/js/tabs.js"></script>
+<script src="{{__PUBLIC__}}/Home/js/public.js"></script>
+<script src="{{__PUBLIC__}}/static/customalert/js/xcConfirm.js"></script>
+<script type="text/javascript">
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+
+    function cancel(id){
+        $.ajax({
+            url: "{:U('Order/upStatus')}",
+            type: 'post',
+            dataType: 'json',
+            data: {
+                id: id,
+                status: 2
+            },
+            success: function(data){
+                if (data == 2) {
+                    var url = "{:U('Order/index')}";
+                    window.wxc.xcConfirm('订单取消成功!', window.wxc.xcConfirm.typeEnum.info,url);
+                }else{
+                    window.wxc.xcConfirm('订单取消失败!', window.wxc.xcConfirm.typeEnum.info);
+                }
+            }
+        })
+    }
+    //监听返回按钮 返回到列表
+    pushHistory();
+    window.addEventListener("popstate", function(e) {
+        window.location = "{:U('Order/index')}";
+    }, false);
+
+    function pushHistory() {
+        var state = {
+            title: "details",
+            url: "#"
+        };
+        window.history.pushState(state, state.title, state.url);
+    }
+</script>
+
+</body>
+
+</html>

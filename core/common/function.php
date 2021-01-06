@@ -484,7 +484,7 @@ if (! function_exists('generateQRGoogle')) {
  * 打印类详情
  * @param $class object 对象
  */
-if (function_exists('classType')) {
+if (! function_exists('classType')) {
     function classType($class)
     {
         $ref = new \ReflectionClass($class);
@@ -519,7 +519,7 @@ if (function_exists('classType')) {
  *
  * @param string $url
  */
-if (function_exists('redirect')) {
+if (! function_exists('redirect')) {
     function redirect($url = '')
     {
         if (empty($url)) {
@@ -540,7 +540,7 @@ if (function_exists('redirect')) {
  * @param
  * @return string 字符串类型的返回结果
  */
-if (function_exists('getReferer')) {
+if (! function_exists('getReferer')) {
     function getReferer()
     {
         return empty($_SERVER['HTTP_REFERER'])?'':$_SERVER['HTTP_REFERER'];
@@ -551,7 +551,7 @@ if (function_exists('getReferer')) {
 * 时间轴函数, Unix 时间戳
 * @param int $time 时间
 */
-if (function_exists('tranTime')) {
+if (! function_exists('tranTime')) {
     function tranTime($time)
     {
         $nowTime = time ();
@@ -599,5 +599,15 @@ if (function_exists('tranTime')) {
             }
         }
         return $message;
+    }
+}
+
+/**
+ * 打印变量并终止
+ */
+if (! function_exists("dd")) {
+    function dd($data)
+    {
+        var_dump($data);die();
     }
 }

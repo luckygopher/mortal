@@ -1,8 +1,8 @@
 <?php
-namespace app\controller;
+namespace app\home\controller;
 
 use core\Mortal;
-use app\model\UserModel;
+use app\home\model\UserModel;
 
 class UserController extends Mortal
 {

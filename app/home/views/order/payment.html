@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html >
+
+{% include "public/header.html" %}
+
+<body>
+<div class="box">
+    <div class="pubilc-title">
+        <a href="javascript:history.go(-1);" rel="external nofollow" class="left"></a>
+        <span class="text">确认支付</span>
+    </div>
+    <div class="box">
+        <div class="title-content">
+            <span class="txt">订单详情</span>
+        </div>
+        <div class="box payment-list">
+            <a href="" class="payment-list-img">
+                <img src="__ROOT__{$info['img']}" alt="">
+            </a>
+            <div class="payment-list-txt">
+                <p class="title">
+                    <a href="">{$info['product_name']}...</a>
+                </p>
+                <p class="text">下单时间：{$info['itime']}</p>
+                <p class="text">订单号：{$info['order_num']}</p>
+                <p class="title">总价：￥{$info['total_price']} 采购：￥{$info['money']}</p>
+            </div>
+        </div>
+        <div class="payment-total">应付：￥{$info['should_pay']}</div>
+        <input type="submit" value="确定支付" class="payment-sub">
+    </div>
+</div>
+
+
+
+<!--浮动层-->
+<div class="ftc_wzsf">
+    <div class="srzfmm_box">
+        <div class="qsrzfmm_bt clear_wl"> <img src="__PUBLIC__/Home/img/xx_03.jpg" class="tx close fl" > <span>请输入支付密码</span> </div>
+        <div class="zfmmxx_shop">
+            <div class="wxzf_price">￥{$info['should_pay']}</div>
+        </div>
+        <select class="payment-select" id="payway">
+            <option value="1">余额支付</option>
+            <option value="2">现金支付</option>
+        </select>
+        <ul class="mm_box">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <div class="numb_box">
+        <div class="xiaq_tb"> <img src="__PUBLIC__/Home/img/jftc_14.jpg" height="10"> </div>
+        <ul class="nub_ggg">
+            <li><a href="javascript:void(0);">1</a></li>
+            <li><a href="javascript:void(0);" class="zj_x">2</a></li>
+            <li><a href="javascript:void(0);">3</a></li>
+            <li><a href="javascript:void(0);">4</a></li>
+            <li><a href="javascript:void(0);" class="zj_x">5</a></li>
+            <li><a href="javascript:void(0);">6</a></li>
+            <li><a href="javascript:void(0);">7</a></li>
+            <li><a href="javascript:void(0);" class="zj_x">8</a></li>
+            <li><a href="javascript:void(0);">9</a></li>
+            <li><span></span></li>
+            <li><a href="javascript:void(0);" class="zj_x">0</a></li>
+            <li><span  class="del" > <img src="__PUBLIC__/Home/img/jftc_18.jpg"   ></span></li>
+        </ul>
+    </div>
+    <div class="hbbj"></div>
+</div>
+
+<div class="nav" id="J_nav">
+    {% include "public/nav.html" %}
+</div>
+<script src="__PUBLIC__/Home/js/jquery-1.9.1.min.js"></script>
+<script src="__PUBLIC__/Home/js/public.js"></script>
+<script src="__PUBLIC__/static/customalert/js/xcConfirm.js"></script>
+<script type="text/javascript">
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+
+    $(function(){
+        //出现浮动层
+        $(".payment-sub").click(function(){
+            $(".ftc_wzsf").show();
+        });
+        //关闭浮动
+        $(".close").click(function(){
+            $(".ftc_wzsf").hide();
+        });
+        //数字显示隐藏
+        $(".xiaq_tb").click(function(){
+            $(".numb_box").slideUp(500);
+        });
+        $(".mm_box").click(function(){
+            $(".numb_box").slideDown(500);
+        });
+        //----
+        var i = 0;
+        var password = '';
+        $(".nub_ggg li a").click(function(){
+            i++;
+            var num = $(this).text();
+
+            if(i<6){
+                $(".mm_box li").eq(i-1).addClass("mmdd");
+                password += (num + '');
+            }else{
+                i = 6;
+                $(".mm_box li").eq(i-1).addClass("mmdd");
+                password += (num + '');
+                password = password.substring(0,6);
+                var id = "{$info['order_num']}";
+                var pay = "{$info['should_pay']}";
+                var payway = $("#payway").val();
+                // 关闭弹窗
+                $(".ftc_wzsf").hide();
+
+                // 密码输入6位提交
+                $.ajax({
+                    url: "{:U('Order/payment')}",
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        id: id,
+                        pay: pay,
+                        payway: payway,
+                        pwd: password
+                    },
+                    success: function(data){
+                        i= 0;
+                        password = '';
+                        $('.mm_box li').removeClass('mmdd');
+                        switch(data){
+                            case 100:
+                                window.wxc.xcConfirm('支付密码验证失败!', window.wxc.xcConfirm.typeEnum.info);
+                                break;
+                            case 200:
+                                var url = "{:U('User/index')}";
+                                window.wxc.xcConfirm('支付成功!', window.wxc.xcConfirm.typeEnum.info,url);
+                                break;
+                            case 300:
+                                window.wxc.xcConfirm('支付失败!', window.wxc.xcConfirm.typeEnum.info);
+                                break;
+                            case 400:
+                                window.wxc.xcConfirm('余额不足!', window.wxc.xcConfirm.typeEnum.info);
+                                break;
+                            default:
+                                window.wxc.xcConfirm('未知错误!', window.wxc.xcConfirm.typeEnum.info);
+                        }
+                    },
+                    error: function(){
+                        i= 0;
+                        password = '';
+                        $('.mm_box li').removeClass('mmdd');
+                        window.wxc.xcConfirm('发起支付请求失败!', window.wxc.xcConfirm.typeEnum.info);
+                    }
+                });
+
+            }
+        });
+        $(".nub_ggg li .del").click(function(){
+            if(i>0){
+                i--
+                $(".mm_box li").eq(i).removeClass("mmdd");
+                i==0;
+                password = password.substring(0,i);
+            }
+        });
+    });
+</script>
+</body>
+</html>
