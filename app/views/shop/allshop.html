@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+{% include "public/header.html" %}
+
+<body onload="loaded()">
+<div class="box allshop">
+    <div class="search">
+        <i class="icon-search"></i>
+        <input type="text" placeholder="请输入食材关键字">
+    </div>
+    <div class="box">
+        <div class="left" id="J_wrapperLeft">
+            <ul>
+                <notempty name="_parentList">
+                    <volist name="_parentList" id="parentVo">
+                        <if condition='$parentVo.sort eq 1'>
+                            <li  class="active" id="{$parentVo['id']}">
+                                <else />
+                            <li id="{$parentVo['id']}" >
+                        </if>
+                        <a href="javascript:;">
+                            <img src="__ROOT__{$parentVo.path}" alt="">
+                            <div class="text">{$parentVo.name}</div>
+                        </a>
+                        </li>
+                    </volist>
+                    <else/>
+                    <li class="active">
+                        <a href="javascript:;">
+                            <img src="{__PUBLIC__}/Home/img/allshop1.png" alt="">
+                            <div class="text">暂无内容</div>
+                        </a>
+                    </li>
+                </notempty>
+
+            </ul>
+        </div>
+        <div class="right" id="J_wrapperRight">
+            <div class="box">
+                <notempty name="_sonList">
+                    <volist name="_sonList" id="sonVo">
+                        <div class="list">
+                            <a href="{:U('Shop/lists?cid='.$sonVo['id'])}">
+                                <img src="__ROOT__{$sonVo.path}" alt="">
+                                <div class="text">
+                                    <p>{$sonVo.name|msubstr=0,10,'utf-8',false}</p>
+                                    <p>{$sonVo.description|msubstr=0,13,'utf-8',true}</p>
+                                </div>
+                                <i class="icon-right"></i>
+                            </a>
+                        </div>
+                    </volist>
+                    <!-- <div class="list">
+                        <a href="">
+                            <img src="{__PUBLIC__}/Home/img/allshop6.png" alt="">
+                            <div class="text2">
+                                查看全部
+                            </div>
+                            <i class="icon-right"></i>
+                        </a>
+                    </div> -->
+                    <else/>
+                    <div class="text">aOh! 暂时还没有内容! </div>
+                </notempty>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="nav" id="J_nav">
+    {% include "public/nav.html" %}
+</div>
+
+<script src="{__PUBLIC__}/Home/js/jquery-1.9.1.min.js"></script>
+<script src="{__PUBLIC__}/Home/js/public.js"></script>
+<script src="{__PUBLIC__}/Home/js/iscroll.js"></script>
+<script>
+    var shopLeft,shopRight;
+
+    function loaded(){
+        shopLeft = new IScroll('#J_wrapperLeft',{
+            preventDefault: false
+        });
+        shopRight = new IScroll('#J_wrapperRight',{
+            preventDefault: false
+        });
+    };
+
+
+    $(".search").click(function(event) {
+        window.location.href = "{:U('Shop/search')}";
+    });
+
+    $('#J_wrapperLeft ul').on('click','li',function(e){
+        e.preventDefault();
+
+
+        var id = $(this).attr('id');
+        $.ajax({
+            url: "{:U('Shop/ajaxCate')}",
+            type: 'get',
+            dataType: 'json',
+            data: {id: id},
+            success: function(data){
+                var str = "";
+                var url = "";
+                var sonId;
+                if (JSON.stringify(data) != 'null') {
+                    for (var i = 0; i < data.length; i++) {
+                        sonId = data[i]['id'];
+                        url = "{:U('Shop/lists?cid=sonId')}";
+                        url = url.replace('sonId',sonId);
+
+                        str += "<div class='list'><a href='"+url+"'><img src='__ROOT__"+data[i]['path']+"' alt=''><div class='text'><p>"+data[i]['name']+"</p><p>"+data[i]['description']+"</p></div><i class='icon-right'></i></a></div>";
+                    }
+                }else{
+                    str = "<div class='text'>aOh! 暂时还没有内容! </div>";
+                }
+
+                $("#J_wrapperRight .box").html(str);
+            }
+        })
+
+        $(this).addClass('active');
+        $(this).siblings('li').removeClass('active');
+    });
+
+    $("#J_nav").on('click', function(event) {
+        $(this).find(".link").toggleClass('displayN');
+    });
+
+    $('body').on('touchmove', function (event) {event.preventDefault();});
+</script>
+</body>
+</html>
